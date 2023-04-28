@@ -22,3 +22,6 @@ class Settings(BaseSettings):
     DB_NAME = "dev.sqlite"
     DB_PATH = os.path.join(DB_FOLDER, DB_NAME)
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{DB_PATH}"
+
+
+settings = Settings()
