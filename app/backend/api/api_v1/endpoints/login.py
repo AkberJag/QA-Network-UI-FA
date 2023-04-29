@@ -1,9 +1,13 @@
+from datetime import timedelta
+
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.backend.crud import curd_user
 from app.backend import dependencies
+from app.backend.core import security
+from app.backend.core.config import settings
 
 router = APIRouter()
 
@@ -17,3 +21,16 @@ async def login_access_token(
     user = curd_user.authenticate(
         db, email=form_data.username, password=form_data.password
     )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password",
+        )
+
+    token_expires = timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    token = security.create_access_token(user.id, token_expires)
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+    }
