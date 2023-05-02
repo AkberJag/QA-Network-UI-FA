@@ -1,1 +1,1 @@
-from .crud_user import curd_user
+from app.backend.crud.crud_user import crud_user
