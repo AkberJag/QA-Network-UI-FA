@@ -6,7 +6,6 @@ from pydantic import BaseModel, EmailStr
 class UserBase(BaseModel):
     """shared properties"""
 
-    id: int | None = None
     email: EmailStr | None = None
 
 
