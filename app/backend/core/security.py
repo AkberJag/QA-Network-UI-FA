@@ -39,3 +39,8 @@ def create_access_token(user_id: int, expires_delta: timedelta | None = None) ->
 def verify_password(password: str, hashed_password: str) -> bool:
     """Match the password against a hash"""
     return pwd_context.verify(password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    """Generate password hash"""
+    return pwd_context.hash(password)
