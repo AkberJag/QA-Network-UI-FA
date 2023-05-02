@@ -24,4 +24,4 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return user
 
 
-curd_user = CRUDUser(User)
+crud_user = CRUDUser(User)

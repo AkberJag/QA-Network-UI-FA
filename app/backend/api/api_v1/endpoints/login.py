@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.backend.crud import curd_user
+from app.backend.crud import crud_user
 from app.backend import dependencies
 from app.backend.core import security
 from app.backend.core.config import settings
@@ -18,7 +18,7 @@ async def login_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """OAuth2 compatible token login, get an access token for future requests"""
-    user = curd_user.authenticate(
+    user = crud_user.authenticate(
         db, email=form_data.username, password=form_data.password
     )
     if not user:
