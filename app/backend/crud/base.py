@@ -25,13 +25,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchematype]):
         """
         self.model = model
 
-    def create(self, db: Session, obj_in: CreateSchemaType):
+    def create(self, db: Session, obj_in: CreateSchemaType) -> None | ModelType:
         """Adds a new object to the database and returns the object with the new ID."""
         # todo: make this async
-        db.add(obj_in)
+        obj_in_data = self.model(**obj_in.dict())
+        db.add(obj_in_data)
         db.commit()
-        db.refresh(obj_in)
-        return obj_in
+        db.refresh(obj_in_data)
+        return obj_in_data
 
     def get(self, db: Session, id: int) -> None | ModelType:
         """Retrieves an object from the database by its ID"""

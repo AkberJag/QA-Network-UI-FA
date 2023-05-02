@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.backend import dependencies
-from app.backend.schemas import UserCreate, UserOut
+from app.backend.schemas import UserCreate, UserOut, UserInDB
 from app.backend.core import security
 
 from app.backend.models import User
@@ -22,9 +22,8 @@ async def create_user(user_in: UserCreate, db: Session = Depends(dependencies.ge
             status_code=status.HTTP_409_CONFLICT, detail="This email is already in use"
         )
 
-    obj_in = User(
-        **user_in.dict(exclude={"password"}),
-        hashed_password=security.get_password_hash(user_in.password)
+    obj_in = UserInDB(
+        **user_in.dict(), hashed_password=security.get_password_hash(user_in.password)
     )
 
     return crud_user.create(db, obj_in)
