@@ -35,3 +35,6 @@ class UserInDB(UserInDBBase):
 
 class UserOut(UserBase):
     """Additional properties to return via API"""
+
+    class Config:
+        orm_mode = True
