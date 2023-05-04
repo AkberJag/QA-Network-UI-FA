@@ -7,4 +7,4 @@ class Token(BaseModel):
     """Base token schema"""
 
     access_token: str
-    toke_type: Literal["bearer"]
+    token_type: Literal["bearer"]
