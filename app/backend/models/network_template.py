@@ -7,6 +7,7 @@ from .base import Base
 class NetworkTemplate(Base):
     """A network template where different parameters of a network is configured"""
 
+    id = Column(Integer, primary_key=True, index=True)
     network_template_name = Column(String, unique=True)  # Eg: good network
 
     cidr_notation = Column(String)  # Eg: 192.168.1.1/23
