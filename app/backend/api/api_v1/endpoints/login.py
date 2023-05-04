@@ -8,11 +8,12 @@ from app.backend.crud import crud_user
 from app.backend import dependencies
 from app.backend.core import security
 from app.backend.core.config import settings
+from app.backend import schemas
 
 router = APIRouter()
 
 
-@router.post("/login/token")
+@router.post("/login/token", response_model=schemas.Token)
 async def login_access_token(
     db: Session = Depends(dependencies.get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
