@@ -19,8 +19,6 @@ class NetworkTemplateBase(BaseModel):
 class NetworkTemplateCreate(NetworkTemplateBase):
     """Properties to receive via API on creation"""
 
-    no_of_pcs: int = 0
-
 
 class NetworkTemplateUpdate(NetworkTemplateBase):
     """Properties to receive via API on creation"""
@@ -31,3 +29,13 @@ class NetworkTemplateOut(NetworkTemplateBase):
 
     class Config:
         orm_mode = True
+
+
+class NetworkTemplateDBBase(NetworkTemplateBase):
+    id: int | None = None
+
+
+class NetworkTemplateDB(NetworkTemplateDBBase):
+    """Additional properties stored in DB"""
+
+    no_of_pcs: int = 0
