@@ -27,6 +27,8 @@ class NetworkTemplateUpdate(NetworkTemplateBase):
 class NetworkTemplateOut(NetworkTemplateBase):
     """Additional properties to return via API"""
 
+    no_of_pcs: int = 0
+
     class Config:
         orm_mode = True
 
