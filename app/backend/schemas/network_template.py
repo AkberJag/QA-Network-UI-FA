@@ -35,7 +35,7 @@ class NetworkTemplateDBBase(NetworkTemplateBase):
     id: int | None = None
 
 
-class NetworkTemplateDB(NetworkTemplateDBBase):
+class NetworkTemplateInDB(NetworkTemplateDBBase):
     """Additional properties stored in DB"""
 
     no_of_pcs: int = 0
