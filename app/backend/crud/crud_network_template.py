@@ -1,3 +1,5 @@
+from sqlalchemy.orm import Session
+
 from app.backend.schemas.network_template import (
     NetworkTemplateBase,
     NetworkTemplateCreate,
@@ -6,7 +8,19 @@ from app.backend.schemas.network_template import (
 from .base import CRUDBase
 from app.backend.models.network_template import NetworkTemplate
 
-CURDNetworkTemplate = CRUDBase[
-    NetworkTemplateBase, NetworkTemplateCreate, NetworkTemplateUpdate
-]
+
+class CURDNetworkTemplate(
+    CRUDBase[NetworkTemplateBase, NetworkTemplateCreate, NetworkTemplateUpdate]
+):
+    def get_by_template_name(
+        self, db: Session, template_name: str
+    ) -> None | NetworkTemplate:
+        """Return a user object by email adderss"""
+        return (
+            db.query(NetworkTemplate)
+            .filter(NetworkTemplate.network_template_name == template_name)
+            .first()
+        )
+
+
 crud_network_template = CURDNetworkTemplate(NetworkTemplate)
