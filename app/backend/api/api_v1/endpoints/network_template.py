@@ -30,3 +30,12 @@ async def create_network_template(
 
     obj_in = NetworkTemplateInDB(**template_in.dict())
     return crud_network_template.create(db, obj_in)
+
+
+@router.get("/", response_model=list[NetworkTemplateOut])
+async def return_all_templates(
+    db: Session = Depends(dependencies.get_db),
+) -> list[NetworkTemplateOut]:
+    """Return all available network templates"""
+
+    return db.query(NetworkTemplate).all()
