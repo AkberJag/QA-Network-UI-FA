@@ -15,7 +15,7 @@ class CURDNetworkTemplate(
     def get_by_template_name(
         self, db: Session, template_name: str
     ) -> None | NetworkTemplate:
-        """Return a user object by email adderss"""
+        """Return a network template object by the template name"""
         return (
             db.query(NetworkTemplate)
             .filter(NetworkTemplate.network_template_name == template_name)
