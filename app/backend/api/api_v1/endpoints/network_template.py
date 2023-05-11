@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.backend import dependencies
 from app.backend.crud import crud_network_template
-from app.backend.models import NetworkTemplate
+from app.backend.models import NetworkTemplate, User
 from app.backend.schemas.network_template import (
     NetworkTemplateCreate,
     NetworkTemplateInDB,
@@ -15,7 +15,9 @@ router = APIRouter()
 
 @router.post("/", response_model=NetworkTemplateOut)
 async def create_network_template(
-    template_in: NetworkTemplateCreate, db: Session = Depends(dependencies.get_db)
+    template_in: NetworkTemplateCreate,
+    db: Session = Depends(dependencies.get_db),
+    current_user: User = Depends(dependencies.get_current_user),
 ):
     """Create new network template"""
     new_network_template = crud_network_template.get_by_template_name(
@@ -37,6 +39,7 @@ async def edit_template(
     template_id: int,
     template_in: NetworkTemplateCreate,
     db: Session = Depends(dependencies.get_db),
+    current_user: User = Depends(dependencies.get_current_user),
 ) -> NetworkTemplateOut:
     """Edit a template"""
 
@@ -67,7 +70,11 @@ async def edit_template(
 
 
 @router.delete("/{template_id}/", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_template(template_id: int, db: Session = Depends(dependencies.get_db)):
+async def delete_template(
+    template_id: int,
+    db: Session = Depends(dependencies.get_db),
+    current_user: User = Depends(dependencies.get_current_user),
+):
     template = crud_network_template.get(db, template_id)
 
     if not template:
@@ -80,6 +87,7 @@ async def delete_template(template_id: int, db: Session = Depends(dependencies.g
 @router.get("/", response_model=list[NetworkTemplateOut])
 async def return_all_templates(
     db: Session = Depends(dependencies.get_db),
+    current_user: User = Depends(dependencies.get_current_user),
 ) -> list[NetworkTemplateOut] | None:
     """Return all available network templates"""
 
