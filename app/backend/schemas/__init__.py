@@ -6,5 +6,5 @@ from .network_template import (
     NetworkTemplateUpdate,
     NetworkTemplateInDB,
 )
-from .token import Token
+from .token import Token, TokenPayload
 from .user import UserCreate, UserInDB, UserOut, UserUpdate
