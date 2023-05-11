@@ -8,3 +8,9 @@ class Token(BaseModel):
 
     access_token: str
     token_type: Literal["bearer"]
+
+
+class TokenPayload(BaseModel):
+    """Token Payload"""
+
+    sub: int | None = None
