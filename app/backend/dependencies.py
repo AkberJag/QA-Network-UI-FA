@@ -32,7 +32,7 @@ def get_current_user(
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
-        token_data = schemas.Token(**payload)
+        token_data = schemas.TokenPayload(**payload)
     except JWTError as exc:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
