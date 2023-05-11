@@ -66,6 +66,17 @@ async def edit_template(
     return crud_network_template.update(db, obj_in, template)
 
 
+@router.delete("/{template_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_template(template_id: int, db: Session = Depends(dependencies.get_db)):
+    template = crud_network_template.get(db, template_id)
+
+    if not template:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, detail="Network template not found"
+        )
+    crud_network_template.delete(db, template_id)
+
+
 @router.get("/", response_model=list[NetworkTemplateOut])
 async def return_all_templates(
     db: Session = Depends(dependencies.get_db),
