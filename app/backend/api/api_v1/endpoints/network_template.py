@@ -43,9 +43,7 @@ async def edit_template(
 ) -> NetworkTemplateOut:
     """Edit a template"""
 
-    template = crud_network_template.get_by_template_name(
-        db, template_in.network_template_name
-    )
+    template = crud_network_template.get(db, template_id)
 
     if not template:
         raise HTTPException(
