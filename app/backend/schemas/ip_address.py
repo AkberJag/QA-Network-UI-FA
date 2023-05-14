@@ -8,12 +8,15 @@ class IPAddressBase(BaseModel):
 
     pc_name: str
     ip_address: str
+    network_template_id: int
 
 
 class IPAddressCreate(IPAddressBase):
     """Properties to recive when a new ip is created"""
 
-    network_template_id: int
+
+class IPAddressUpdate(IPAddressBase):
+    """Properties to recive when a new ip is updated"""
 
 
 class IPAddressOut(IPAddressBase):
@@ -21,3 +24,11 @@ class IPAddressOut(IPAddressBase):
 
     class Config:
         orm_mode = True
+
+
+class IPAddressDBBase(IPAddressBase):
+    id: int | None = None
+
+
+class IPAddressInDB(IPAddressDBBase):
+    """Additional properties stored in DB"""
