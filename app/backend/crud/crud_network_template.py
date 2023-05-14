@@ -10,7 +10,7 @@ from app.backend.models.network_template import NetworkTemplate
 
 
 class CURDNetworkTemplate(
-    CRUDBase[NetworkTemplateBase, NetworkTemplateCreate, NetworkTemplateUpdate]
+    CRUDBase[NetworkTemplate, NetworkTemplateCreate, NetworkTemplateUpdate]
 ):
     def get_by_template_name(
         self, db: Session, template_name: str
