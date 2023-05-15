@@ -85,3 +85,15 @@ async def edit_ip_address(
     update_pc_count(db, ip_address_in.network_template_id, old_template_id)
 
     return updated_ip
+
+
+@router.delete("/{ip_address_id}", response_model=IPAddressOut)
+async def delete_ip_address(ip_address_id: str, db: Session = Depends(get_db)):
+    ip_address_to_delete = crud_ip_address.get(db, ip_address_id)
+    if not ip_address_to_delete:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, "Selected Ip Addess/Pc does not exist"
+        )
+    deleted_ip_address = crud_ip_address.delete(db, ip_address_id)
+    update_pc_count(db, ip_address_to_delete.network_template_id)
+    return deleted_ip_address
