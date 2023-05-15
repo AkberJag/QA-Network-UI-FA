@@ -3,21 +3,29 @@ from sqlalchemy.orm import Session
 
 from app.backend.dependencies import get_db
 from app.backend.crud import crud_ip_address, crud_network_template
-from app.backend.models.ip_address import IPAddress
+from app.backend.models import IPAddress, User
 from app.backend.schemas.ip_address import IPAddressOut, IPAddressCreate, IPAddressInDB
 from app.backend.core.database import update_pc_count
+from app.backend import dependencies
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[IPAddressOut])
-async def get_all_ip_address(db: Session = Depends(get_db)) -> list[IPAddressOut]:
+async def get_all_ip_address(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(dependencies.get_current_user),
+) -> list[IPAddressOut]:
     """Return all ip address"""
     return db.query(IPAddress).all()
 
 
 @router.post("/", response_model=IPAddressOut)
-async def create_new_ip(ip_address_in: IPAddressCreate, db: Session = Depends(get_db)):
+async def create_new_ip(
+    ip_address_in: IPAddressCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(dependencies.get_current_user),
+):
     """Create new IP address"""
 
     network_template = crud_network_template.get(db, ip_address_in.network_template_id)
@@ -47,7 +55,10 @@ async def create_new_ip(ip_address_in: IPAddressCreate, db: Session = Depends(ge
 
 @router.put("/{ip_address_id}", response_model=IPAddressOut)
 async def edit_ip_address(
-    ip_address_in: IPAddressCreate, ip_address_id: int, db: Session = Depends(get_db)
+    ip_address_in: IPAddressCreate,
+    ip_address_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(dependencies.get_current_user),
 ):
     ip_address_to_update = crud_ip_address.get(db, ip_address_id)
     if not ip_address_to_update:
@@ -88,7 +99,11 @@ async def edit_ip_address(
 
 
 @router.delete("/{ip_address_id}", response_model=IPAddressOut)
-async def delete_ip_address(ip_address_id: str, db: Session = Depends(get_db)):
+async def delete_ip_address(
+    ip_address_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(dependencies.get_current_user),
+):
     ip_address_to_delete = crud_ip_address.get(db, ip_address_id)
     if not ip_address_to_delete:
         raise HTTPException(
