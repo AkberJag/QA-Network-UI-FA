@@ -8,15 +8,19 @@ class NetworkTemplateBase(BaseModel):
 
     network_template_name: str
 
-    cidr_ip: str
-    cidr_suffix: int = Field(ge=1, le=32)
-
     bandwidth_restriction_upload: float
     bandwidth_restriction_download: float
 
     dns_latency: float
     general_latency: float
     packet_loss: float
+
+
+class NetworkTemplateIn(NetworkTemplateBase):
+    """Properties to receive via API on creation base"""
+
+    cidr_ip: str
+    cidr_suffix: int = Field(ge=1, le=32)
 
     @validator("cidr_ip")
     @classmethod
@@ -31,18 +35,19 @@ class NetworkTemplateBase(BaseModel):
         )
 
 
-class NetworkTemplateCreate(NetworkTemplateBase):
+class NetworkTemplateCreate(NetworkTemplateIn):
     """Properties to receive via API on creation"""
 
 
-class NetworkTemplateUpdate(NetworkTemplateBase):
-    """Properties to receive via API on creation"""
+class NetworkTemplateUpdate(NetworkTemplateIn):
+    """Properties to receive via API on updation"""
 
 
 class NetworkTemplateOut(NetworkTemplateBase):
     """Additional properties to return via API"""
 
     no_of_pcs: int = 0
+    cidr_notation: str
 
     class Config:
         orm_mode = True
@@ -56,3 +61,4 @@ class NetworkTemplateInDB(NetworkTemplateDBBase):
     """Additional properties stored in DB"""
 
     no_of_pcs: int = 0
+    cidr_notation: str
