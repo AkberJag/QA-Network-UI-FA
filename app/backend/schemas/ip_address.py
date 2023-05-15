@@ -4,8 +4,6 @@ from fastapi import Depends, HTTPException, status
 from pydantic import BaseModel, validator
 from sqlalchemy.orm import Session
 
-from app.backend.dependencies import get_db
-from app.backend.models import NetworkTemplate
 from app.backend import utils
 
 
