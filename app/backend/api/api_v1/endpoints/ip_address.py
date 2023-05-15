@@ -21,7 +21,9 @@ async def create_new_ip(ip_address_in: IPAddressCreate, db: Session = Depends(ge
 
     network_template = crud_network_template.get(db, ip_address_in.network_template_id)
     if not network_template:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Selected owner does not exist")
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, "Selected network template does not exist"
+        )
 
     print(network_template.no_of_pcs)
 
