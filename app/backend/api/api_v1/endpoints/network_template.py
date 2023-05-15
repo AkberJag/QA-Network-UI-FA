@@ -30,7 +30,10 @@ async def create_network_template(
             detail="This template name is already in use, choose a different name",
         )
 
-    obj_in = NetworkTemplateInDB(**template_in.dict())
+    obj_in = NetworkTemplateInDB(
+        **template_in.dict(),
+        cidr_notation=f"{template_in.cidr_ip}/{template_in.cidr_suffix}",
+    )
     return crud_network_template.create(db, obj_in)
 
 
@@ -63,7 +66,10 @@ async def edit_template(
             detail="This template name is already in use, choose a different name",
         )
 
-    obj_in = NetworkTemplateInDB(**template_in.dict())
+    obj_in = NetworkTemplateInDB(
+        **template_in.dict(),
+        cidr_notation=f"{template_in.cidr_ip}/{template_in.cidr_suffix}",
+    )
     return crud_network_template.update(db, obj_in, template)
 
 
