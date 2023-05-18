@@ -3,6 +3,14 @@ body {
     height: 100%;
 }
 
+.alert {
+    position: fixed;
+    top: 0;
+    left: 1;
+    min-width: 500px;
+    margin-top: 70px;
+}
+
 body {
     display: -ms-flexbox;
     display: -webkit-box;
