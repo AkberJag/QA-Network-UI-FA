@@ -18,6 +18,11 @@ async def login(request: Request):
     return template.TemplateResponse("auth/login.html", {"request": request})
 
 
+@router.post("/login", response_class=HTMLResponse)
+async def login_post(request: Request, db: Session = Depends(get_db)):
+    return template.TemplateResponse("auth/login.html", {"request": request})
+
+
 @router.get("/register", response_class=HTMLResponse)
 async def register(request: Request):
     return template.TemplateResponse("auth/register.html", {"request": request})
