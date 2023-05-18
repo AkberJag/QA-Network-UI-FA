@@ -1,0 +1,7 @@
+{% if msg %}
+<div class="alert alert-{{category if category in ['primary', 'danger', 'success', 'warning' ] else 'warning'}} alert-dismissible fade show"
+    role="alert">
+    {{msg}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
