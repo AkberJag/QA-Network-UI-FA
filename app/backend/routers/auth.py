@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, status
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.backend.models import User
-from app.backend.dependencies import get_current_user
+from .route_dependencies import get_current_user
 
 router = APIRouter(prefix="/user", tags=["auth"])
 template = Jinja2Templates(directory="app/frontend/templates")
@@ -16,8 +16,22 @@ async def login(request: Request):
 
 @router.get("/register", response_class=HTMLResponse)
 async def register(request: Request):
-    # user: User = Depends(get_current_user)
-    user = 1
-    return template.TemplateResponse(
-        "auth/register.html", {"request": request, "user": user}
+    return template.TemplateResponse("auth/register.html", {"request": request})
+
+
+@router.get("/logout", response_class=HTMLResponse)
+async def logout(request: Request):
+    user = await get_current_user(request)
+
+    if not user:
+        return RedirectResponse(url="/register", status_code=status.HTTP_302_FOUND)
+
+    msg = "Logged out!"
+
+    response = template.TemplateResponse(
+        "auth/login.html",
+        {"request": request, "msg": msg},
+        status_code=status.HTTP_302_FOUND,
     )
+    response.delete_cookie(key="access_token")
+    return response
