@@ -38,6 +38,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchematype]):
         """Retrieves an object from the database by its ID"""
         return db.query(self.model).filter(self.model.id == id).first()
 
+    def get_all(self, db: Session) -> None | ModelType:
+        """Retrieves all objects"""
+        return db.query(self.model).all()
+
     def update(self, db: Session, obj_in: UpdateSchematype, db_obj: ModelType):
         """Updates an existing object in the database"""
         obj_in_data = obj_in.dict()
