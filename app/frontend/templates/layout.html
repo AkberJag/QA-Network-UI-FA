@@ -11,19 +11,30 @@
 </head>
 
 <body style="padding-top: 65px;">
-    {# navbar #}
-    {% include "nav.html" %}
+    <header>
+        {# navbar #}
+        {% include "nav.html" %}
+    </header>
+    <main>
 
-    {# flash message #}
-    {% include "flash.html" %}
+        {# flash message #}
+        {% include "flash.html" %}
 
-    {# main content of a page #}
-    {% block content %}
+        {# main content of a page #}
+        {% block content %}
 
-    {% endblock content %}
+        {% endblock content %}
+
+    </main>
 
     <script src="{{url_for('static', path='/js/popper.min.js')}}"></script>
     <script src="{{url_for('static', path='/js/bootstrap.min.js')}}"></script>
+
+    <!-- https://getbootstrap.com/docs/5.0/components/popovers/#example-enable-popovers-everywhere -->
+    <script>
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    </script>
 </body>
 
 </html>
