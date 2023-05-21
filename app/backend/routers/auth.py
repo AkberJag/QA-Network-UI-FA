@@ -50,16 +50,24 @@ async def login_for_access_token(
 
 
 @router.get("/login", response_class=HTMLResponse)
-async def login(request: Request):
+async def login(request: Request, current_user: Session = Depends(get_current_user)):
+    if current_user.get("id"):
+        return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     return template.TemplateResponse("auth/login.html", {"request": request})
 
 
 @router.post("/login", response_class=HTMLResponse)
-async def login_post(request: Request, db: Session = Depends(get_db)):
+async def login_post(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: Session = Depends(get_current_user),
+):
+    if current_user.get("id"):
+        return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     try:
         form = LoginForm(request)
         await form.create_oauth_form()
-        response = RedirectResponse(url="", status_code=status.HTTP_302_FOUND)
+        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
 
         validate_user_cookie = await login_for_access_token(response, db, form)
         if not validate_user_cookie:
@@ -76,12 +84,20 @@ async def login_post(request: Request, db: Session = Depends(get_db)):
 
 
 @router.get("/register", response_class=HTMLResponse)
-async def register(request: Request):
+async def register(request: Request, current_user: Session = Depends(get_current_user)):
+    if current_user.get("id"):
+        return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     return template.TemplateResponse("auth/register.html", {"request": request})
 
 
 @router.post("/register", response_class=HTMLResponse)
-async def register_post(request: Request, db: Session = Depends(get_db)):
+async def register_post(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: Session = Depends(get_current_user),
+):
+    if current_user.get("id"):
+        return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
     form_data = await request.form()
 
     validate_email = crud_user.get_by_email(db, form_data.get("email"))
@@ -109,9 +125,10 @@ async def register_post(request: Request, db: Session = Depends(get_db)):
 @router.get("/logout", response_class=HTMLResponse)
 async def logout(request: Request):
     user = await get_current_user(request)
+    print(user)
 
-    if not user:
-        return RedirectResponse(url="/register", status_code=status.HTTP_302_FOUND)
+    if not user.get("id"):
+        return RedirectResponse(url="/user/login", status_code=status.HTTP_302_FOUND)
 
     msg = "Logged out!"
 
