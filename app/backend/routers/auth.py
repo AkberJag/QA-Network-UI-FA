@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Request, status, Depends
+from datetime import timedelta
+
+from fastapi import APIRouter, Request, status, Depends, Response, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.backend.dependencies import get_db
 from .route_dependencies import get_current_user
@@ -13,6 +16,39 @@ router = APIRouter(prefix="/user", tags=["auth"])
 template = Jinja2Templates(directory="app/frontend/templates")
 
 
+class LoginForm:
+    def __init__(self, request: Request) -> None:
+        self.request = request
+        self.username: str | None = None
+        self.password: str | None = None
+        self.errors: list
+
+    async def create_oauth_form(self):
+        form = await self.request.form()
+
+        self.username = form.get("email")
+        self.password = form.get("password")
+
+
+async def login_for_access_token(
+    response: Response,
+    db: Session = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    user = crud_user.authenticate(
+        db, email=form_data.username, password=form_data.password
+    )
+
+    if not user:
+        return False
+
+    token_expires = timedelta(minutes=30)
+    token = security.create_access_token(user_id=user.id, expires_delta=token_expires)
+
+    response.set_cookie(key="access_token", value=token, httponly=True)
+    return True
+
+
 @router.get("/login", response_class=HTMLResponse)
 async def login(request: Request):
     return template.TemplateResponse("auth/login.html", {"request": request})
@@ -20,7 +56,23 @@ async def login(request: Request):
 
 @router.post("/login", response_class=HTMLResponse)
 async def login_post(request: Request, db: Session = Depends(get_db)):
-    return template.TemplateResponse("auth/login.html", {"request": request})
+    try:
+        form = LoginForm(request)
+        await form.create_oauth_form()
+        response = RedirectResponse(url="", status_code=status.HTTP_302_FOUND)
+
+        validate_user_cookie = await login_for_access_token(response, db, form)
+        if not validate_user_cookie:
+            msg = "Incorrect Username or password"
+            return template.TemplateResponse(
+                "auth/login.html", {"request": request, "msg": msg}
+            )
+        return response
+    except HTTPException:
+        msg = "unknown error"
+        return templates.TemplateResponse(
+            "auth/login.html", {"request": request, "msg": msg}
+        )
 
 
 @router.get("/register", response_class=HTMLResponse)
