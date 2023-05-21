@@ -42,6 +42,9 @@ class NetworkTemplateCreate(NetworkTemplateIn):
 class NetworkTemplateUpdate(NetworkTemplateIn):
     """Properties to receive via API on updation"""
 
+    cidr_ip: None | str
+    cidr_suffix: None | int
+
 
 class NetworkTemplateOut(NetworkTemplateBase):
     """Additional properties to return via API"""
